@@ -1,11 +1,25 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, connectFirestoreEmulator, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+
+// Localhost Emulator Support for local offline database development
+if (typeof window !== 'undefined' && localStorage.getItem('razka_use_local_emulator') === 'true') {
+  try {
+    const host = localStorage.getItem('razka_emulator_host') || 'localhost';
+    const firestorePort = Number(localStorage.getItem('razka_emulator_firestore_port')) || 8080;
+    const authPort = Number(localStorage.getItem('razka_emulator_auth_port')) || 9099;
+    connectFirestoreEmulator(db, host, firestorePort);
+    connectAuthEmulator(auth, `http://${host}:${authPort}`);
+    console.info(`[Database] Terhubung ke Localhost Emulator: ${host}:${firestorePort}`);
+  } catch (e) {
+    console.warn('Emulator localhost tidak aktif atau telah terhubung:', e);
+  }
+}
 
 export enum OperationType {
   CREATE = 'create',

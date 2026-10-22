@@ -32,6 +32,7 @@ import {
 } from '../types';
 import { useAuth } from './AuthContext';
 import { generateInvoiceNumber } from '../utils/formatters';
+import { syncToGoogleSheets } from '../utils/spreadsheetSync';
 
 interface StoreContextType {
   products: Product[];
@@ -955,6 +956,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           }
         }
       });
+
+      // Background sync to Google Sheets if Webhook is configured
+      if (typeof window !== 'undefined') {
+        const sheetsUrl = localStorage.getItem('razka_sheets_webhook_url');
+        if (sheetsUrl) {
+          syncToGoogleSheets(sheetsUrl, 'sync_sale', sale).catch((e) =>
+            console.warn('Background sync to Google Sheets failed:', e)
+          );
+        }
+      }
 
       return sale;
     } catch (err) {

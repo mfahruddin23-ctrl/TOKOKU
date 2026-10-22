@@ -75,3 +75,32 @@ Sistem memiliki 6 peran pengguna yang dapat diuji coba langsung melalui dropdown
 4. **Kasir**: Akses kasir POS, penjualan, dan struk.
 5. **Gudang**: Penerimaan barang, penyesuaian stok, dan opname fisik.
 6. **Keuangan**: Buku kas, pelunasan hutang piutang, dan pencatatan biaya.
+
+---
+
+## 🔌 Panduan Koneksi Database Localhost & Google Spreadsheet
+
+Aplikasi telah dilengkapi fitur konfigurasi langsung di menu **Pengaturan Toko -> Koneksi Localhost & Google Spreadsheet**.
+
+### A. Menghubungkan ke Database Google Spreadsheet (Live Sync):
+1. Buat Google Sheets baru di browser Anda: [sheets.new](https://sheets.new).
+2. Klik menu **Ekstensi (Extensions)** -> **Apps Script**.
+3. Buka menu **Pengaturan Toko** di aplikasi ini -> klik tab **Koneksi Localhost & Google Spreadsheet** -> klik tombol **"Lihat Kode Script"** dan salin kodenya.
+4. Tempel ke editor Apps Script, lalu klik **Terapkan (Deploy)** -> **Deployment baru (New deployment)**.
+5. Pilih tipe **Aplikasi Web (Web App)**, lalu atur *Akses (Who has access)* ke **Anyone (Siapa saja)**.
+6. Salin **Web App URL** yang didapat, lalu tempelkan ke kolom URL Webhook di aplikasi ini dan klik **Simpan & Sinkronkan**.
+7. Setiap penjualan kasir dan katalog produk material akan otomatis tercatat ke baris Google Spreadsheet Anda!
+
+### B. Menghubungkan ke Database Localhost (Firebase Emulator / Offline):
+1. Install Firebase CLI di komputer Anda:
+   ```bash
+   npm install -g firebase-tools
+   ```
+2. Jalankan emulator Firestore & Auth di komputer lokal:
+   ```bash
+   firebase emulators:start --only firestore,auth
+   ```
+3. Di aplikasi ini, buka **Pengaturan Toko** -> tab **Koneksi Localhost & Google Spreadsheet**.
+4. Centang **"Gunakan Database Localhost (Firebase Emulator)"** (Host: `localhost`, Port Firestore: `8080`, Port Auth: `9099`).
+5. Klik **Simpan & Terapkan Konfigurasi Localhost**. Aplikasi akan otomatis beralih ke database lokal di komputer Anda.
+
