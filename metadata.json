@@ -1,0 +1,7 @@
+{
+  "name": "RAZKA JAYA STORE MANAGEMENT SYSTEM",
+  "description": "Sistem Manajemen Toko & POS Profesional untuk Toko Material & Toko Umum berbasis Firebase Cloud Firestore & Auth",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

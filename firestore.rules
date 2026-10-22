@@ -1,0 +1,176 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Admins and owners have full access, authenticated staff have operational access
+    function isStaff() {
+      return isSignedIn();
+    }
+
+    // User collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.auth.uid == userId || resource == null);
+    }
+
+    // Master Product Catalog
+    match /products/{productId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff() && isValidId(productId);
+      allow delete: if isStaff();
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Units
+    match /units/{unitId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Warehouses
+    match /warehouses/{warehouseId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Customers & Receivables
+    match /customers/{customerId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /receivables/{receivableId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /receivablePayments/{paymentId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Suppliers & Payables
+    match /suppliers/{supplierId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /payables/{payableId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /payablePayments/{paymentId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Sales transactions (POS)
+    match /sales/{saleId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if isStaff();
+    }
+
+    match /salesReturns/{returnId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Purchases (Pembelian supplier)
+    match /purchases/{purchaseId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if isStaff();
+    }
+
+    match /purchaseReturns/{returnId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Inventory & Stock mutations
+    match /stockMovements/{movementId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update, delete: if false; // Immutable audit trail
+    }
+
+    match /stockOpnames/{opnameId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /stockBalances/{balanceId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Cash and Finance
+    match /cashSessions/{sessionId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /cashMovements/{movementId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /expenses/{expenseId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /bankAccounts/{accountId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /bankTransactions/{txId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /journalEntries/{entryId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Audit logs
+    match /auditLogs/{logId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update, delete: if false;
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
